@@ -5,25 +5,25 @@
     Import-Module (Join-Path $ModulePath "psNakivo.psd1") -Force
 }
 
-Describe $command.Name -Tags $command.Name,"Help" -ForEach (Get-Command -Module $ModuleName | Where-Object { $_.CommandType -ne 'Alias' } ) {
+Describe "<_>" -Tags "Help" -ForEach (Get-Command -Module $ModuleName | Where-Object { $_.CommandType -ne 'Alias' } ) {
     $command = $_
 
     Context "Function Help" {
 
         It 'Synopsis not empty' {
-            Get-Help $command | Select-Object -ExpandProperty synopsis | Should -Not -BeNullOrEmpty
+            Get-Help $_ | Select-Object -ExpandProperty synopsis | Should -Not -BeNullOrEmpty
         }
 
         It "Synopsis should not be auto-generated" -Skip:$( $isLinux -or $isMacOs ) {
-            Get-Help $command | Select-Object -ExpandProperty synopsis | Should -Not -BeLike '*`[`<CommonParameters`>`]*'
+            Get-Help $_ | Select-Object -ExpandProperty synopsis | Should -Not -BeLike '*`[`<CommonParameters`>`]*'
         }
 
         It 'Description not empty' -Skip:$( $isLinux -or $isMacOs ) {
-            Get-Help $command | Select-Object -ExpandProperty Description | Should -Not -BeNullOrEmpty
+            Get-Help $_ | Select-Object -ExpandProperty Description | Should -Not -BeNullOrEmpty
         }
 
         It 'Examples Count greater than 0' -Skip:$( $isLinux -or $isMacOs ) {
-            $Examples = Get-Help $command | Select-Object -ExpandProperty Examples | Measure-Object
+            $Examples = Get-Help $_ | Select-Object -ExpandProperty Examples | Measure-Object
             $Examples.Count -gt 0 | Should -Be $true
         }
 
@@ -31,31 +31,31 @@ Describe $command.Name -Tags $command.Name,"Help" -ForEach (Get-Command -Module 
 
     Context "PlatyPS Default Help" {
         It "Synopsis should not be auto-generated - Platyps default"  {
-            Get-Help $command | Select-Object -ExpandProperty synopsis | Should -Not -BeLike '*{{Fill in the Synopsis}}*'
+            Get-Help $_ | Select-Object -ExpandProperty synopsis | Should -Not -BeLike '*{{Fill in the Synopsis}}*'
         }
 
         It "Description should not be auto-generated - Platyps default" {
-            Get-Help $command | Select-Object -ExpandProperty Description | Should -Not -BeLike '*{{Fill in the Description}}*'
+            Get-Help $_ | Select-Object -ExpandProperty Description | Should -Not -BeLike '*{{Fill in the Description}}*'
         }
 
         It "Example should not be auto-generated - Platyps default" {
-            Get-Help $command | Select-Object -ExpandProperty Examples | Should -Not -BeLike '*{{ Add example code here }}*'
+            Get-Help $_ | Select-Object -ExpandProperty Examples | Should -Not -BeLike '*{{ Add example code here }}*'
         }
     }
 
     Context "Parameter Help" {
 
-        It "Parameter Help for '<name>'" -ForEach (Get-Help $command | Select-Object -ExpandProperty Parameters).parameter {
+        It "Parameter Help for '<name>'" -ForEach (Get-Help $_ | Select-Object -ExpandProperty Parameters).parameter {
             $_.description.text | Should -Not -BeNullOrEmpty
         }
 
     }
 
     # Output Type if Verb is 'Get'
-    Context "OutputType - $($command.Name)" -Skip:$($command.Verb -ne "Get") {
+    Context "OutputType - $($_.Name)" -Skip:$($_.Verb -ne "Get") {
 
         It "OutputType Present on verb Get" {
-            (Get-Command $command).OutputType | Should -Not -BeNullOrEmpty
+            (Get-Command $_).OutputType | Should -Not -BeNullOrEmpty
         }
 
     }
