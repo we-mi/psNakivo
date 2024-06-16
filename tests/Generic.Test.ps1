@@ -1,11 +1,10 @@
 ﻿BeforeAll {
-    $ModuleName = 'psNakivo'
     $ModulePath = "$PSScriptRoot\..\psNakivo\"
 
     Import-Module (Join-Path $ModulePath "psNakivo.psd1") -Force
 }
 
-Describe "<_>" -Tags "Help" -ForEach (Get-Command -Module $ModuleName | Where-Object { $_.CommandType -ne 'Alias' } ) {
+Describe "<_>" -Tags "Help" -ForEach (Get-Command -Module "psNakivo" | Where-Object { $_.CommandType -ne 'Alias' } ) {
     $command = $_
 
     Context "Function Help" {
@@ -81,7 +80,7 @@ Describe 'Module Information' -Tags 'Command'{
         }
 
         It 'Valid Manifest Name' {
-            $Script:Manifest.Name | Should -Be $ModuleName
+            $Script:Manifest.Name | Should -Be "psNakivo"
         }
 
         It 'Generic Version Check' {
@@ -93,7 +92,7 @@ Describe 'Module Information' -Tags 'Command'{
         }
 
         It 'Valid Manifest Root Module' {
-            $Script:Manifest.RootModule | Should -Be ".\$ModuleName.psm1"
+            $Script:Manifest.RootModule | Should -Be ".\psNakivo.psm1"
         }
 
         It 'Valid Manifest GUID' {
@@ -121,8 +120,8 @@ Describe 'Module Information' -Tags 'Command'{
 
     Context 'Exported Functions' {
         It 'Proper Number of Functions Exported' {
-            $ExportedCount = Get-Command -Module $ModuleName | Where-Object { $_.CommandType -ne 'Alias' } | Measure-Object | Select-Object -ExpandProperty Count
-            $FileCount = Get-ChildItem -Path "$PSScriptRoot\..\$ModuleName\Public" -Filter *.ps1 -Recurse | Measure-Object | Select-Object -ExpandProperty Count
+            $ExportedCount = Get-Command -Module "psNakivo" | Where-Object { $_.CommandType -ne 'Alias' } | Measure-Object | Select-Object -ExpandProperty Count
+            $FileCount = Get-ChildItem -Path "$PSScriptRoot\..\psnakivo\Public" -Filter *.ps1 -Recurse | Measure-Object | Select-Object -ExpandProperty Count
 
             $ExportedCount | Should -Be $FileCount
         }
