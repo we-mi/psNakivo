@@ -1,3 +1,5 @@
+![PSScriptAnalyzer](https://github.com/we-mi/psNakivo/actions/workflows/powershell.yml/badge.svg)
+
 # psNakivo
 
 Powershell Module for the Nakivo-API
