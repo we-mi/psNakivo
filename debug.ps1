@@ -2,10 +2,8 @@
 
 $Server = "localhost"
 $Username = "admin"
-$Password = "nakivo" | ConvertTo-SecureString -AsPlainText -Force
+$Password = $null
 
-$Credential = New-Object pscredential -ArgumentList $Username, $Password
-
-Connect-Nakivo -Server $Server -Credential $Credential -SkipCertificateCheck
+Connect-Nakivo -Server $Server -Username "admin" -Password $Password -SkipCertificateCheck -PassThru
 
 # do your magic
