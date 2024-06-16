@@ -1,11 +1,8 @@
-﻿BeforeAll {
-    $ModulePath = "$PSScriptRoot\..\psNakivo\"
-
-    Import-Module (Join-Path $ModulePath "psNakivo.psd1") -Force
+﻿AfterAll {
+    Remove-Module "psNakivo"
 }
 
-Describe "<_>" -Tags "Help" -ForEach (Get-Command -Module "psNakivo" | Where-Object { $_.CommandType -ne 'Alias' } ) {
-    $command = $_
+Describe "<_>" -Tags "Help" -ForEach $(Import-Module (Join-Path $PSScriptRoot "\..\psNakivo\psNakivo.psd1") -Force; Get-Command -Module "psNakivo" | Where-Object { $_.CommandType -ne 'Alias' } ) {
 
     Context "Function Help" {
 
@@ -44,7 +41,7 @@ Describe "<_>" -Tags "Help" -ForEach (Get-Command -Module "psNakivo" | Where-Obj
 
     Context "Parameter Help" {
 
-        It "Parameter Help for '<name>'" -ForEach (Get-Help $_ | Select-Object -ExpandProperty Parameters).parameter {
+        It "Parameter Help for '<_.name>'" -ForEach (Get-Help $_ | Select-Object -ExpandProperty Parameters).parameter {
             $_.description.text | Should -Not -BeNullOrEmpty
         }
 
