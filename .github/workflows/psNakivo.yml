@@ -1,0 +1,22 @@
+name: psNakivo
+
+on:
+  push
+
+permissions:
+  contents: read
+
+jobs:
+    # The job that will use the container image you just pushed to ghcr.io
+    super-job:
+        runs-on: ubuntu-latest
+        container:
+            image: ghcr.io/we-mi/nakivo-multitenant-full:latest
+            credentials:
+               username: we-mi
+               password: ${{  secrets.GHCR_TOKEN }}
+        steps:
+            - name: test-psNakivo
+              shell: pwsh
+              run: |
+                echo "--This is running in my custom Docker image--"
