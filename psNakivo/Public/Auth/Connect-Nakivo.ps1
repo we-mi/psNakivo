@@ -14,9 +14,9 @@
 .PARAMETER Username
     Username which will be used for the login
 .PARAMETER Password
-    Password for the user as a SecureString-Object
+    Password for the user as a SecureString-Object. Leave this empty if no password was configured.
 .PARAMETER Credential
-    Credential-Object which holds the user information for logging in
+    Credential-Object which holds the user information for logging in. Can't be used if no password was configured.
 .PARAMETER Remember
     Keep the user logged in. Default is logging out after 10 minutes
 .PARAMETER SkipCertificateCheck
@@ -63,10 +63,11 @@ function Connect-Nakivo {
         [String] $Username,
 
         [Parameter(
-            HelpMessage = "Password for the user",
-            Mandatory = $true,
+            HelpMessage = "Password for the user. Leave empty if no password was configures",
+            Mandatory = $false,
             ParameterSetName = "User_Password"
         )]
+        [AllowNull()]
         [securestring] $Password,
 
         [Parameter(
@@ -115,11 +116,15 @@ function Connect-Nakivo {
         if ($PSCmdlet.ParameterSetName -eq "Credential") {
             $LoginSplat.Body.data = @( $Credential.UserName, $Credential.GetNetworkCredential().Password, $Remember.ToBool() )
         } else {
-            $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Password)
+            if ($null -ne $Password) {
+                $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Password)
 
-            $LoginSplat.Body.data = @( $UserName, [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR), $Remember.ToBool() )
+                $LoginSplat.Body.data = @( $UserName, [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR), $Remember.ToBool() )
 
-            [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($BSTR)
+                [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($BSTR)
+            } else {
+                $LoginSplat.Body.data = @( $UserName, $null, $Remember.ToBool() )
+            }
         }
 
         $LoginSplat.Body = $LoginSplat.Body | ConvertTo-Json

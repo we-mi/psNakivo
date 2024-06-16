@@ -20,8 +20,8 @@ Connect-Nakivo [-Server] <String> [-Port <Int32>] [-SSL <Boolean>] -Credential <
 
 ### User_Password
 ```
-Connect-Nakivo [-Server] <String> [-Port <Int32>] [-SSL <Boolean>] -Username <String> -Password <SecureString>
- [-Remember] [-SkipCertificateCheck] [-PassThru] [<CommonParameters>]
+Connect-Nakivo [-Server] <String> [-Port <Int32>] [-SSL <Boolean>] -Username <String>
+ [-Password <SecureString>] [-Remember] [-SkipCertificateCheck] [-PassThru] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -95,7 +95,7 @@ Type: System.Security.SecureString
 Parameter Sets: User_Password
 Aliases:
 
-Required: True
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
