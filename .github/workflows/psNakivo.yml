@@ -23,7 +23,10 @@ jobs:
           run: |
             Set-PSRepository PSGallery -InstallationPolicy Trusted
             Install-Module Pester -Confirm:$false -Force
-        - name: Perform the generic pester test
+        - name: Run pester tests in ./tests
           shell: pwsh
           run: |
-            Invoke-Pester -Output Detailed tests\Generic.Test.ps1 -PassThru
+            Get-ChildItem -Path test -Filter "*.Test.ps1" | ForEach-Object {
+                Write-Host "Run test: $($_.Name)"
+                Invoke-Pester -Output Detailed $_.FullName -PassThru
+            }
