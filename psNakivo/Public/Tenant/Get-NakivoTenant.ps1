@@ -38,6 +38,7 @@ function Get-NakivoTenant {
                 tid = 1
                 data = $null
             }
+            Uri = $script:ApiBaseUrl + "c/router"
         }
 
 

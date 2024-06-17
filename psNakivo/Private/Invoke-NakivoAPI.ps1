@@ -7,7 +7,6 @@
     )
 
     begin {
-        $Request.Uri = $script:ApiUrl
         $Request.Method = "Post"
         $Request.Headers = @{
             "Content-Type" = "application/json"
