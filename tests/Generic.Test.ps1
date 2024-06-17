@@ -10,15 +10,15 @@ Describe "<_>" -Tags "Help" -ForEach $(Import-Module (Join-Path $PSScriptRoot "\
             Get-Help $_ | Select-Object -ExpandProperty synopsis | Should -Not -BeNullOrEmpty
         }
 
-        It "Synopsis should not be auto-generated" -Skip:$( $isLinux -or $isMacOs ) {
+        It "Synopsis should not be auto-generated" {
             Get-Help $_ | Select-Object -ExpandProperty synopsis | Should -Not -BeLike '*`[`<CommonParameters`>`]*'
         }
 
-        It 'Description not empty' -Skip:$( $isLinux -or $isMacOs ) {
+        It 'Description not empty' {
             Get-Help $_ | Select-Object -ExpandProperty Description | Should -Not -BeNullOrEmpty
         }
 
-        It 'Examples Count greater than 0' -Skip:$( $isLinux -or $isMacOs ) {
+        It 'Examples Count greater than 0' {
             $Examples = Get-Help $_ | Select-Object -ExpandProperty Examples | Measure-Object
             $Examples.Count -gt 0 | Should -Be $true
         }
@@ -118,7 +118,7 @@ Describe 'Module Information' -Tags 'Command'{
     Context 'Exported Functions' {
         It 'Proper Number of Functions Exported' {
             $ExportedCount = Get-Command -Module "psNakivo" | Where-Object { $_.CommandType -ne 'Alias' } | Measure-Object | Select-Object -ExpandProperty Count
-            $FileCount = Get-ChildItem -Path "$PSScriptRoot\..\psnakivo\Public" -Filter *.ps1 -Recurse | Measure-Object | Select-Object -ExpandProperty Count
+            $FileCount = Get-ChildItem -Path (Join-Path (Get-Module "psNakivo" | Select-Object -ExpandProperty ModuleBase) "Public") -Filter *.ps1 -Recurse | Measure-Object | Select-Object -ExpandProperty Count
 
             $ExportedCount | Should -Be $FileCount
         }
