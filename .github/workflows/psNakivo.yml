@@ -18,6 +18,9 @@ jobs:
         steps:
         - name: Check out repository code
           uses: actions/checkout@v4
+        - name: Make sure the nakivo service is started
+          shell: sh
+          run: /etc/init.d/nkv-dirsvc start
         - name: Install Pester
           shell: pwsh
           run: |
