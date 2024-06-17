@@ -26,7 +26,7 @@ jobs:
         - name: Run pester tests in ./tests
           shell: pwsh
           run: |
-            Get-ChildItem -Path tests -Filter "*.Test.ps1" | ForEach-Object {
+            Get-ChildItem -Path tests -Filter "*.Test.ps1" -Recurse | ForEach-Object {
                 Write-Host "Run test: $($_.Name)"
-                Invoke-Pester -Output Detailed $_.FullName -PassThru
+                Invoke-Pester -Output Detailed $_.FullName
             }
