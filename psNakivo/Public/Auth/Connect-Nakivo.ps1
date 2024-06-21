@@ -23,6 +23,8 @@
     Do not check the servers ssl certificate. You should not use this in productive environments
 .PARAMETER PassThru
     Send the output object back to stdout
+.PARAMETER Multitenancy
+    Specify if the nakivo instance you want to connect to is a multi-tenant-installation. Defaults to $False
 .EXAMPLE
     Connect-Nakivo -Server nakivo.example.com -Username admin -Password ( "mysuperstrongpassword" | ConvertTo-SecureString -AsPlainText -Force)
     Connect to the nakivo instance at `nakivo.example.com` as user `admin` with the provided password. Use SSL (https) for the connection and check for a valid ssl certificate
@@ -90,12 +92,22 @@ function Connect-Nakivo {
         [Parameter(
             Mandatory = $false
         )]
+        [Switch] $MultiTenancy,
+
+        [Parameter(
+            Mandatory = $false
+        )]
         [Switch] $PassThru
     )
 
     process {
-
         $script:SkipCertificateCheck = $SkipCertificateCheck.ToBool()
+
+        if ($SSL) {
+            $script:ApiBaseUrl = "https://$($Server):$($Port)/"
+        } else {
+            $script:ApiBaseUrl = "http://$($Server):$($Port)/"
+        }
 
         $LoginSplat = @{
             SessionVariable = "session"
@@ -105,12 +117,7 @@ function Connect-Nakivo {
                 type = "rpc"
                 tid = 1
             }
-        }
-
-        if ($SSL) {
-            $script:ApiUrl = "https://$($Server):$($Port)/c/router"
-        } else {
-            $script:ApiUrl = "https://$($Server):$($Port)/c/router"
+            Uri = $script:ApiBaseUrl + "c/router"
         }
 
         if ($PSCmdlet.ParameterSetName -eq "Credential") {
@@ -132,31 +139,41 @@ function Connect-Nakivo {
         Write-Debug "Trying to login to $($LoginSplat.Uri)"
 
         try {
-            $result = Invoke-NakivoAPI $LoginSplat | ConvertFrom-Json
+            $result = Invoke-NakivoAPI $LoginSplat
 
-            switch ($result.data.result) {
-                "OK" {
-                    Write-Verbose "Login to nakivo successful"
-                    if ($PassThru) {
-                        $EndResult = $result.data.userInfo
-                        $EndResult.pstypenames.insert(0,"Nakivo.User")
-                        Write-Output $EndResult
+            switch ($result.type) {
+                "exception" {
+                    Write-Error "Login to nakivo failed: $($result.message)"
+                }
+                "rpc" {
+                    switch ($result.data.result) {
+                        "OK" {
+                            Write-Verbose "Login to nakivo successful"
+                            if ($PassThru) {
+                                $EndResult = $result.data.userInfo
+                                $EndResult.pstypenames.insert(0,"Nakivo.User")
+                                Write-Output $EndResult
+                            }
+
+                            $script:Multitenancy = $MultiTenancy.ToBool()
+
+                        }
+                        "FAIL_OTHER" {
+                            Write-Error "Login to nakivo failed: $($result.data.reason). This was your login attempt #$($result.data.canTry.failedAttempts)"
+                        }
+                        "FAIL_BLOCKED_WAIT" {
+                            Write-Error "Login to nakivo failed. You have reached the maximum login attempts ($($result.data.canTry.failedAttempts)) and need to wait $($result.data.canTry.waitTimeLeft) seconds before you can try to login again"
+                        }
+                        default {
+                            Write-Error "Login to nakivo failed: $($result.data.result)"
+                        }
                     }
                 }
-                "FAIL_OTHER" {
-                    Write-Error "Login to nakivo failed: $($result.data.reason). This was your login attempt #$($result.data.canTry.failedAttempts)"
-                }
-                "FAIL_BLOCKED_WAIT" {
-                    Write-Error "Login to nakivo failed. You have reached the maximum login attempts ($($result.data.canTry.failedAttempts)) and need to wait $($result.data.canTry.waitTimeLeft) seconds before you can try to login again"
-                }
-                default {
-                    Write-Error "Login to nakivo failed: $($result.data.result)"
-                }
             }
+
 
         } catch {
             Write-Error "Unexpected error while connecting to nakivo server: $_"
         }
-
     }
 }

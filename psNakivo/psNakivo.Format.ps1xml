@@ -71,5 +71,46 @@
         </ListEntries>
       </ListControl>
     </View>
+    <View>
+      <Name>psNakivo</Name>
+      <ViewSelectedBy>
+        <TypeName>Nakivo.Job</TypeName>
+      </ViewSelectedBy>
+      <ListControl>
+        <ListEntries>
+          <ListEntry>
+            <ListItems>
+              <ListItem>
+                <PropertyName>id</PropertyName>
+              </ListItem>
+              <ListItem>
+                <PropertyName>name</PropertyName>
+              </ListItem>
+              <ListItem>
+                <PropertyName>hvType</PropertyName>
+              </ListItem>
+              <ListItem>
+                <PropertyName>status</PropertyName>
+              </ListItem>
+              <ListItem>
+                <PropertyName>vmCount</PropertyName>
+              </ListItem>
+              <ListItem>
+                <PropertyName>isEnabled</PropertyName>
+              </ListItem>
+              <ListItem>
+                <PropertyName>isLockedRunningJob</PropertyName>
+              </ListItem>
+              <ListItem>
+                <PropertyName>lockReasons</PropertyName>
+              </ListItem>
+              <ListItem>
+                <PropertyName>crState</PropertyName>
+              </ListItem>
+            </ListItems>
+          </ListEntry>
+        </ListEntries>
+      </ListControl>
+    </View>
   </ViewDefinitions>
 </Configuration>

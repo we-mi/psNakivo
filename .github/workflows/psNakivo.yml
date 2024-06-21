@@ -28,8 +28,4 @@ jobs:
             Install-Module Pester -Confirm:$false -Force
         - name: Run pester tests in ./tests
           shell: pwsh
-          run: |
-            Get-ChildItem -Path tests -Filter "*.Test.ps1" -Recurse | ForEach-Object {
-                Write-Host "Run test: $($_.Name)"
-                Invoke-Pester -Output Detailed $_.FullName
-            }
+          run: .\runTests.ps1 -Server localhost -Username admin -Password $null
