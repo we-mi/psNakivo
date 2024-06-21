@@ -1,8 +1,8 @@
 ﻿---
-external help file: psNakivo-help.xml
-Module Name: psNakivo
-online version: https://github.com/we-mi/psNakivo/blob/main/docs/Get-NakivoTenant.md
-schema: 2.0.0
+external help file: psNakivo-help.xml  
+Module Name: psNakivo  
+online version: https://github.com/we-mi/psNakivo/blob/main/docs/Get-NakivoTenant.md  
+schema: 2.0.0  
 ---
 
 # Get-NakivoTenant

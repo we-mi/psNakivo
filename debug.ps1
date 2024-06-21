@@ -4,6 +4,8 @@ $Server = "localhost"
 $Username = "admin"
 $Password = $null
 
-Connect-Nakivo -Server $Server -Username "admin" -Password $Password -SkipCertificateCheck -PassThru
+Connect-Nakivo -Server $Server -Username $Username -Password $Password -SkipCertificateCheck -PassThru -MultiTenancy
 
 # do your magic
+
+Disconnect-Nakivo

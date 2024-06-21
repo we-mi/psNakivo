@@ -47,7 +47,7 @@ function Get-NakivoTenant {
         Write-Debug "Trying to get nakivo tenants"
 
         try {
-            $result = Invoke-NakivoAPI $LoginSplat | ConvertFrom-Json
+            $result = Invoke-NakivoAPI $LoginSplat
 
             if ($result.data) {
                 if ($TenantName) {

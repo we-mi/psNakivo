@@ -78,11 +78,11 @@ function Get-NakivoJob {
         Write-Debug "Trying to get nakivo jobs for tenant $TenantUUID"
 
         try {
-            $result = Invoke-NakivoAPI $LoginSplat | ConvertFrom-Json
+            $result = Invoke-NakivoAPI $LoginSplat
 
             if ($result.data) {
 
-                    $EndResults = $result.data.children
+                $EndResults = $result.data.children
 
             } else {
                 Write-Error "List nakivo jobs for tenant $TenantUUID failed: $($result.message)"

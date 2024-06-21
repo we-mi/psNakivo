@@ -71,7 +71,7 @@ function Get-NakivoJobOverview {
         Write-Debug "Trying to get nakivo job overview for tenant $TenantUUID"
 
         try {
-            $result = Invoke-NakivoAPI $LoginSplat | ConvertFrom-Json
+            $result = Invoke-NakivoAPI $LoginSplat
 
             if ($result.data) {
 

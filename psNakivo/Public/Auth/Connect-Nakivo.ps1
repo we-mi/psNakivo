@@ -139,7 +139,7 @@ function Connect-Nakivo {
         Write-Debug "Trying to login to $($LoginSplat.Uri)"
 
         try {
-            $result = Invoke-NakivoAPI $LoginSplat | ConvertFrom-Json
+            $result = Invoke-NakivoAPI $LoginSplat
 
             switch ($result.type) {
                 "exception" {
@@ -175,6 +175,5 @@ function Connect-Nakivo {
         } catch {
             Write-Error "Unexpected error while connecting to nakivo server: $_"
         }
-
     }
 }

@@ -38,25 +38,34 @@ public class TrustAllCertsPolicy : ICertificatePolicy {
 
     process {
 
-        if ( $Request.ContainsKey("SessionVariable") ) {
-            # This seems to be a login request
-            $Request.Remove("WebSession") # Just to be sure
-        } else {
-            # This seems to be a 'normal' request session, which needs to have the "WebSession" parameter for Invoke-Webrequest
-            if ( $null -eq $script:WebSession ) {
-                Throw "You do not seem to be connected to a nakivo instance right now. Please use 'Connect-Nakivo' command before using any other command"
+        # special case for registering the admin user on the first startup: no need for cookies
+        $BodyAsJson = $Request.Body | ConvertFrom-Json
+        if ( $BodyAsJson.action -ne "RegistrationManagement" -and $BodyAsJson.method -ne "register") {
+            if ( $Request.ContainsKey("SessionVariable") ) {
+                # This seems to be a login request
+                $Request.Remove("WebSession") # Just to be sure
             } else {
-                $Request.WebSession = $script:WebSession
-            }
+                # This seems to be a 'normal' request session, which needs to have the "WebSession" parameter for Invoke-Webrequest
+                if ( $null -eq $script:WebSession ) {
+                    Throw "You do not seem to be connected to a nakivo instance right now. Please use 'Connect-Nakivo' command before using any other command"
+                } else {
+                    $Request.WebSession = $script:WebSession
+                }
 
+            }
         }
 
+        $ProgressPreference = "SilentlyContinue"
         $result = Invoke-WebRequest @Request
 
         if ($Request.ContainsKey("SessionVariable")) {
             $script:WebSession = Get-Variable -Name $Request.SessionVariable -Scope Local | Select-Object -ExpandProperty Value
         }
 
-        $result
+        try {
+            $result.Content | ConvertFrom-Json
+        } catch {
+            $result.Content
+        }
     }
 }

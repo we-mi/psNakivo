@@ -15,13 +15,14 @@ Connect to a nakivo instance
 ### Credential (Default)
 ```
 Connect-Nakivo [-Server] <String> [-Port <Int32>] [-SSL <Boolean>] -Credential <PSCredential> [-Remember]
- [-SkipCertificateCheck] [-PassThru] [<CommonParameters>]
+ [-SkipCertificateCheck] [-MultiTenancy] [-PassThru] [<CommonParameters>]
 ```
 
 ### User_Password
 ```
 Connect-Nakivo [-Server] <String> [-Port <Int32>] [-SSL <Boolean>] -Username <String>
- [-Password <SecureString>] [-Remember] [-SkipCertificateCheck] [-PassThru] [<CommonParameters>]
+ [-Password <SecureString>] [-Remember] [-SkipCertificateCheck] [-MultiTenancy] [-PassThru]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -58,7 +59,8 @@ Remember the connection (default is being logged out after 10 minutes)
 ## PARAMETERS
 
 ### -Credential
-Credential-Object which holds the user information for logging in
+Credential-Object which holds the user information for logging in.
+Can't be used if no password was configured.
 
 ```yaml
 Type: System.Management.Automation.PSCredential
@@ -68,6 +70,22 @@ Aliases:
 Required: True
 Position: Named
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -MultiTenancy
+Specify if the nakivo instance you want to connect to is a multi-tenant-installation.
+Defaults to $False
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -88,7 +106,8 @@ Accept wildcard characters: False
 ```
 
 ### -Password
-Password for the user as a SecureString-Object
+Password for the user as a SecureString-Object.
+Leave this empty if no password was configured.
 
 ```yaml
 Type: System.Security.SecureString
